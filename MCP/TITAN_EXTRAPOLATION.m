@@ -91,8 +91,7 @@ L1 = max(L1,1e-4);
 L2 = norm(U1'*U1,'fro');
 L2 = max(L2,1e-4);
 
-delta=0.01;
-
+vu = 1e-15;
 
 for i = 1:maxIter
     tt = cputime;
@@ -104,14 +103,11 @@ for i = 1:maxIter
     L1 = norm(V1*V1','fro');
     L1 = max(L1,1e-4);
     
-    diff_U = U1-U0;
-    eps0 = norm(diff_U,'fro');
-    
     %%%update U
     
     for iner_iter = 1:para.iner
     
-        bi_U = min(bi,sqrt(C*L1_prev/(4*L1)));
+        bi_U = min(bi,sqrt(C*L1_prev*(1-vu)/L1));
 
         y_U = (1+bi_U)*U1 - bi_U*U0;
 
@@ -130,11 +126,7 @@ for i = 1:maxIter
         U0 = U1;
         U1 = max(0,abs(tU1) - wu/(L*L1)).*sign(tU1);
         
-        diff_U = U1-U0;
-        eps = norm(diff_U,'fro');
-        if eps < delta*eps0
-            break;
-        end
+        
     end
     
     %%%update V
@@ -142,7 +134,7 @@ for i = 1:maxIter
     L2_prev = L2; 
     L2 = norm(U1'*U1,'fro');
     L2 = max(L2,1e-4);
-    bi_V = min(bi,sqrt(C*L2_prev/(4*L2)));
+    bi_V = min(bi,sqrt(C*L2_prev*(1-vu)/L2));
     
     for iner_iter = 1:para.iner
         y_V = (1+bi_V)*V1 - bi_V*V0;
