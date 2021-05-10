@@ -3,7 +3,7 @@
 % non-convex and nonsmooth problems. Mathematical Programming, 146(1):459{494, Aug 2014
 % 
 % Written by LTK Hien, Umons, Belgium.
-% Latest update October 2020
+% Latest update May 2021
 % 
 % Input 
 %   X: input data matrix
@@ -56,7 +56,7 @@ scaling = sum(sum(XHt.*W))/sum(sum( (W'*W).*(HHt) ));
 W = W*scaling; 
 
 time1=tic;
-e(1)= nX^2 - 2*sum(sum( (W*H).*X ) ) + sum(sum( (W'*W).*(H*H') ) );
+e(1)= nX^2 - 2*sum(sum( (X*H').*W )  ) + sum(sum( (W'*W).*(H*H') ) );
 e(1)= sqrt(max(0,e(1)))/nX; % e is to save relative error
 time_err=toc(time1);
 t(1) = toc(cputime0)-time_err;
@@ -80,7 +80,7 @@ while i <= options.maxiter && t(i) < options.timemax
     H = max( 0 , H - gradH/Lh  ); 
    
     time1=tic;
-    e(i+1)= nX^2 - 2*sum(sum( (W*H).*X ) ) + sum(sum( (W'*W).*(H*H') ) );
+    e(i+1)= nX^2 - 2*sum(sum( (X*H').*W )  ) + sum(sum( (W'*W).*(H*H') ) );
     e(i+1)=sqrt(max(0,e(i+1)))/nX;
     
     time_err=time_err + toc(time1);
